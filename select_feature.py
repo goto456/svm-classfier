@@ -96,6 +96,6 @@ if __name__ == '__main__':
     file_list.append('data/celebrity_washed.txt')
     file_list.append('data/merchant_washed.txt')
     file_list.append('data/pastime_washed.txt')
-    k = 50
+    k = 500
     feature_file = 'data/feature.txt'
     select_feature(file_list, k, feature_file)
