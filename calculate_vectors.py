@@ -7,9 +7,11 @@ import codecs
 import math
 
 
-def calculate_vectors(category_file_list, feature_tag_dict, output_file):
+def calculate_vectors(category_file_list, feature_tag_dict, output_file, output_test_file):
     feature_idf = calculate_feature_idf(category_file_list, set(feature_tag_dict.keys()))
     fout = codecs.open(output_file, 'w', 'utf-8')
+    fout_test = codecs.open(output_test_file, 'w', 'utf-8')
+    test_data_count = 0
     for i, category_file in enumerate(category_file_list):
         fin = codecs.open(category_file, 'r', 'utf-8')
         for line in fin:
@@ -32,10 +34,13 @@ def calculate_vectors(category_file_list, feature_tag_dict, output_file):
             # 生成libsvm数据格式的行
             if len(vectors_dict) > 0:
                 sorted_list = sorted(vectors_dict.items(), key=lambda x: x[0])
-                print(sorted_list)
                 vectors = [str(item[0]) + ':' + item[1] for item in sorted_list]
                 output_line = str(i + 1) + ' ' + ' '.join(vectors)
-                fout.write(u'{}\n'.format(output_line))
+                test_data_count += 1
+                if test_data_count % 5 == 0:
+                    fout_test.write(u'{}\n'.format(output_line))
+                else:
+                    fout.write(u'{}\n'.format(output_line))
 
 
 def calculate_feature_idf(category_file_list, features):
@@ -89,4 +94,5 @@ if __name__ == '__main__':
     category_file_list.append('data/merchant_washed.txt')
     category_file_list.append('data/pastime_washed.txt')
     vector_file = 'data/vectors.txt'
-    calculate_vectors(category_file_list, feature_tag_dict, vector_file)
+    vector_test_file = 'data/vectors_test.txt'
+    calculate_vectors(category_file_list, feature_tag_dict, vector_file, vector_test_file)
